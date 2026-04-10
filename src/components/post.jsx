@@ -1,6 +1,6 @@
 import { comment } from "postcss";
 import { useEffect, useState } from "react";
-
+import { Link } from "react-router";
 function Post(props) {
   const [like, setLike] = useState(0);
   function likeCount() {
@@ -23,7 +23,6 @@ function Post(props) {
     },
   ]);
 
-  
   function seeComment() {
     setViewComment((viewComment) => !viewComment);
     console.log(viewComment);
@@ -40,6 +39,7 @@ function Post(props) {
   const setTotalLikes = props.setTotalLikes;
   const caption = props.caption;
   const image = props.image;
+  const id = props.id;
   const profile =
     props.profile ||
     "https://images.unsplash.com/photo-1680355466468-bd0a68b11fa0?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjZ8fGJsYW5rJTIwcHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D";
@@ -48,17 +48,19 @@ function Post(props) {
   return (
     <div className="max-w-md mx-auto bg-white shadow-md rounded-lg overflow-hidden my-4">
       {/* Post Header */}
-      <div className="flex items-center px-4 py-3">
-        <img
-          className="h-10 w-10 rounded-full object-cover"
-          src={profile}
-          alt="User"
-        />
-        <div className="ml-3">
-          <span className="text-gray-800 font-semibold">{name}</span>
-          <p className="text-gray-500 text-sm">{time}</p>
+      <Link to={`/profile/${id}`}>
+        <div className="flex items-center px-4 py-3">
+          <img
+            className="h-10 w-10 rounded-full object-cover"
+            src={profile}
+            alt="User"
+          />
+          <div className="ml-3">
+            <span className="text-gray-800 font-semibold">{name}</span>
+            <p className="text-gray-500 text-sm">{time}</p>
+          </div>
         </div>
-      </div>
+      </Link>
       {/* Post Caption */}
       <div className="px-4 py-2">
         <p className="text-gray-700">{caption}</p>

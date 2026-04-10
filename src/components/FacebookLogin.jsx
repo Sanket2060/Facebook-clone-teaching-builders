@@ -1,7 +1,36 @@
-import React from "react";
-import { Link } from "react-router";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router";
 
-export default function FacebookLoginUI() {
+const DEMO_USERS = [
+  { username: "student", password: "123456" },
+  { username: "teacher", password: "abc123" },
+];
+
+export default function FacebookLoginUI({ mode = "login" }) {
+  const navigate = useNavigate();
+  const isSignupMode = mode === "signup";
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    const validUser = DEMO_USERS.find(
+      (user) => user.username === username && user.password === password,
+    );
+
+    if (!validUser) {
+      setError("Invalid demo credentials");
+      return;
+    }
+
+    setError("");
+    localStorage.setItem("isLoggedIn", "true");
+    localStorage.setItem("loggedInUser", validUser.username);
+    navigate("/dashboard", { replace: true });
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
       {/* Header */}
@@ -17,26 +46,38 @@ export default function FacebookLoginUI() {
 
           {/* Right Section (Login Card) */}
           <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-sm">
-            <form className="flex flex-col gap-3">
+            <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
               <input
                 type="text"
-                placeholder="Email address or phone number"
+                placeholder="Username"
+                value={username}
+                onChange={(event) => setUsername(event.target.value)}
                 className="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
 
               <input
                 type="password"
                 placeholder="Password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
                 className="border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
               <Link to="/dashboard">
                 <button
-                  type="button"
+                  type="submit"
                   className="bg-blue-600 text-white py-3 rounded-md font-semibold text-lg hover:bg-blue-700"
                 >
-                  Log In
+                  {isSignupMode ? "Sign Up" : "Log In"}
                 </button>
               </Link>
+
+              {error && (
+                <p className="text-red-500 text-sm text-center">{error}</p>
+              )}
+
+              <p className="text-xs text-gray-500 text-center">
+                Demo credentials: student / 123456
+              </p>
 
               <a
                 href="#"
@@ -48,12 +89,30 @@ export default function FacebookLoginUI() {
               <hr className="my-2" />
 
               <div className="flex justify-center">
-                <button
-                  type="button"
-                  className="bg-green-500 text-white px-4 py-3 rounded-md font-semibold hover:bg-green-600"
+                {isSignupMode ? (
+                  <Link
+                    to="/"
+                    className="text-blue-600 text-sm text-center hover:underline"
+                  >
+                    Already have an account? Log In
+                  </Link>
+                ) : (
+                  <Link
+                    to="/signup"
+                    className="bg-green-500 text-white px-4 py-3 rounded-md font-semibold hover:bg-green-600"
+                  >
+                    Create new account
+                  </Link>
+                )}
+              </div>
+
+              <div className="flex justify-center">
+                <Link
+                  to="/about"
+                  className="text-gray-500 text-xs text-center hover:underline"
                 >
-                  Create new account
-                </button>
+                  About this demo
+                </Link>
               </div>
             </form>
           </div>

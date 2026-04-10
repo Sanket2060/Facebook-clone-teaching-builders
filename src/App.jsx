@@ -7,14 +7,28 @@ import Post from "./components/post";
 import TotalLikes from "./components/totalLikes";
 import FacebookLoginUI from "./components/FacebookLogin";
 import { useEffect } from "react";
+import { useNavigate } from "react-router";
+// import { ThemeProvider } from "./context/ThemeContext";
 
 function App() {
+  const navigate = useNavigate();
+
   useEffect(() => {
     console.log("likes");
   });
+  const [theme, setThemeValue] = useState("dark");
   const [totalLikes, setTotalLikes] = useState(0);
+  const loggedInUser = localStorage.getItem("loggedInUser") || "Student";
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("loggedInUser");
+    navigate("/", { replace: true });
+  };
+
   const posts = [
     {
+      id: 1,
       name: "Manish K.C.",
       time: "1 hour ago",
       caption: "Hello from Manish",
@@ -24,6 +38,7 @@ function App() {
         "https://images.unsplash.com/photo-1575936123452-b67c3203c357?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8fDA%3D",
     },
     {
+      id: 2,
       time: "13 mins ago",
       name: "Pratik Pangeni",
       caption: "Hello from Pratik. Look at the View...",
@@ -36,21 +51,42 @@ function App() {
 
   return (
     <>
-      <TotalLikes totalLikes={totalLikes} />
-      {/* <Post name="Sanket" imageUrl="" />
+      <nav className="bg-white shadow-sm border-b border-gray-200 px-4 py-3 sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-blue-600">facebook</h1>
+            <p className="text-xs text-gray-500">Welcome, {loggedInUser}</p>
+          </div>
+
+          <button
+            onClick={handleLogout}
+            className="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-gray-700"
+          >
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      {/* <ThemeProvider value={{ themeValue, setThemeValue }}> */}
+      <main className="max-w-5xl mx-auto px-4 py-6">
+        <TotalLikes totalLikes={totalLikes} />
+        {/* <Post name="Sanket" imageUrl="" />
     <Post name="Pratik" imageUrl="" />
     <Post name="Manish" imageUrl="" />
     <Post name="watson" imageUrl="" /> */}
-      {posts.map((post) => {
-        return (
-          <Post
-            name={post.name}
-            imageUrl={post.image}
-            setTotalLikes={setTotalLikes}
-          />
-        );
-      })}
-      <Post />
+        {posts.map((post) => {
+          return (
+            <Post
+              name={post.name}
+              imageUrl={post.image}
+              setTotalLikes={setTotalLikes}
+              id={post.id}
+            />
+          );
+        })}
+        <Post />
+      </main>
+      {/* </ThemeProvider> */}
     </>
   );
 }
