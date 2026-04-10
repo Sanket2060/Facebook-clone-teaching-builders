@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import axios from "axios";
 import { useParams } from "react-router";
 
 export default function FacebookProfileUI() {
@@ -6,11 +7,13 @@ export default function FacebookProfileUI() {
   const id = params.id;
 
   useEffect(() => {
-    fetch(`https://public-feed-api.replit.app/api/profiles/${id}`)
-      .then((response) => response.json())
-      .then((data) => console.log(data))
+    axios
+      .get(`https://public-feed-api.replit.app/api/profiles/${id}`, {
+        withCredentials: true,
+      })
+      .then((response) => console.log(response.data))
       .catch((error) => console.error("Error:", error));
-  }, []);
+  }, [id]);
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Cover Photo */}

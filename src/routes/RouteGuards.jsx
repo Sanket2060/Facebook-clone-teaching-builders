@@ -1,12 +1,19 @@
 import React from "react";
 import { Navigate } from "react-router";
-
-const isLoggedIn = () => {
-  return localStorage.getItem("isLoggedIn") === "true";
-};
+import { useAuth } from "../hooks/useAuth";
 
 export function ProtectedRoute({ children }) {
-  if (!isLoggedIn()) {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
     return <Navigate to="/" replace />; //redirect to login
   }
 
@@ -19,7 +26,17 @@ export function PublicRoute({ children }) {
 
 // Semi-protected: page is public, but logged-in users are redirected.
 export function SemiProtectedRoute({ children, redirectTo = "/dashboard" }) {
-  if (isLoggedIn()) {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        Loading...
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
     return <Navigate to={redirectTo} replace />; //redirect to dashboard
   }
 
